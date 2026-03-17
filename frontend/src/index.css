@@ -1,4 +1,86 @@
-:root {
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: #f5f7fa;
+  color: #1a1a2e;
+  min-height: 100vh;
+}
+
+/* ── Navbar ───────────────────────────────────────────────── */
+.navbar {
+  background: #16213e;
+  color: white;
+  padding: 0 2rem;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.navbar-brand  { font-weight: 700; font-size: 1.1rem; letter-spacing: .5px; }
+.navbar-links  { display: flex; align-items: center; gap: 1.5rem; }
+.navbar-links a { color: #cbd5e1; text-decoration: none; font-size: .9rem; transition: color .2s; }
+.navbar-links a:hover { color: white; }
+.navbar-user   { color: #94a3b8; font-size: .85rem; }
+.btn-link      { background: none; border: none; color: #f87171; cursor: pointer; font-size: .9rem; padding: 0; }
+.btn-link:hover { text-decoration: underline; }
+
+/* ── Layout ───────────────────────────────────────────────── */
+.page-container { max-width: 520px; margin: 2.5rem auto; padding: 0 1rem; }
+.card {
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 1px 3px rgba(0,0,0,.08), 0 4px 16px rgba(0,0,0,.04);
+}
+.card h1   { font-size: 1.5rem; margin-bottom: .25rem; }
+.subtitle  { color: #64748b; margin-bottom: 1.5rem; font-size: .95rem; }
+
+/* ── Forms ────────────────────────────────────────────────── */
+.form-group               { margin-bottom: 1.25rem; }
+.form-group label         { display: block; font-size: .875rem; font-weight: 500; color: #374151; margin-bottom: .4rem; }
+.form-group input         { width: 100%; padding: .625rem .875rem; border: 1px solid #d1d5db; border-radius: 8px; font-size: 1rem; transition: border-color .15s; outline: none; }
+.form-group input:focus   { border-color: #6366f1; box-shadow: 0 0 0 3px rgba(99,102,241,.1); }
+
+.btn-primary              { width: 100%; padding: .75rem; background: #6366f1; color: white; border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: background .2s; margin-top: .5rem; }
+.btn-primary:hover:not(:disabled) { background: #4f46e5; }
+.btn-primary:disabled     { opacity: .6; cursor: not-allowed; }
+
+/* ── Messages ─────────────────────────────────────────────── */
+.error-msg   { background: #fef2f2; border: 1px solid #fecaca; color: #dc2626; padding: .75rem 1rem; border-radius: 8px; font-size: .9rem; margin-bottom: 1rem; }
+.success-msg { background: #f0fdf4; border: 1px solid #bbf7d0; color: #16a34a; padding: .75rem 1rem; border-radius: 8px; font-size: .9rem; margin-bottom: 1rem; }
+
+/* ── Dashboard ────────────────────────────────────────────── */
+.balance-display  { text-align: center; padding: 1.5rem; background: linear-gradient(135deg, #6366f1, #8b5cf6); border-radius: 12px; margin: 1.5rem 0; color: white; }
+.balance-label    { display: block; font-size: .85rem; opacity: .85; margin-bottom: .25rem; }
+.balance-amount   { font-size: 2.25rem; font-weight: 700; }
+
+.action-grid      { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 1.5rem 0; }
+.action-card      { display: flex; flex-direction: column; align-items: center; gap: .5rem; padding: 1.25rem .5rem; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; text-decoration: none; color: #374151; font-size: .875rem; font-weight: 500; transition: all .2s; }
+.action-card:hover { background: #ede9fe; border-color: #a5b4fc; color: #4f46e5; }
+.action-icon      { font-size: 1.5rem; }
+
+.user-info        { margin-top: 1rem; color: #94a3b8; word-break: break-all; }
+.user-info code   { font-size: .75rem; }
+
+/* ── Transaction history ──────────────────────────────────── */
+.tx-row           { display: flex; justify-content: space-between; align-items: center; padding: .875rem 0; border-bottom: 1px solid #f1f5f9; }
+.tx-row:last-child { border-bottom: none; }
+.tx-info          { display: flex; align-items: center; gap: .75rem; }
+.tx-badge         { font-size: .7rem; font-weight: 700; padding: .2rem .5rem; border-radius: 4px; letter-spacing: .5px; }
+.tx-badge.credit  { background: #dcfce7; color: #15803d; }
+.tx-badge.debit   { background: #fee2e2; color: #b91c1c; }
+.tx-desc          { font-size: .9rem; color: #374151; }
+.tx-right         { text-align: right; }
+.tx-amount        { display: block; font-weight: 600; font-size: .95rem; }
+.tx-amount.credit { color: #16a34a; }
+.tx-amount.debit  { color: #dc2626; }
+.tx-date          { font-size: .75rem; color: #94a3b8; }
+
+.empty-state      { color: #94a3b8; text-align: center; padding: 2rem 0; }
   --text: #6b6375;
   --text-h: #08060d;
   --bg: #fff;

@@ -6,11 +6,9 @@ node_modules/
 dist/
 build/
 
-# Environment files
+# Environment files — .env.example IS committed (template); .env is NOT
 .env
 .env.local
-.env.example
-.env
 .env.*
 *.env
 

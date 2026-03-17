@@ -23,3 +23,5 @@ frontend/dist/
 
 # TypeScript
 *.tsbuildinfo
+
+/src/generated/prisma

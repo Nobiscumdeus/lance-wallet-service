@@ -1,15 +1,45 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { AuthProvider, useAuth } from './context/AuthContext';
+import { NavBar } from './components/NavBar';
+import { RegisterPage }  from './pages/RegisterPage';
+import { DashboardPage } from './pages/DashboardPage';
+import { DepositPage }   from './pages/DepositPage';
+import { TransferPage }  from './pages/TransferPage';
+import { HistoryPage }   from './pages/HistoryPage';
 
-function App() {
-  const [count, setCount] = useState(0)
+const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
+  const { auth } = useAuth();
+  return auth ? <>{children}</> : <Navigate to="/" replace />;
+};
 
+const AppRoutes = () => {
+  const { auth } = useAuth();
   return (
     <>
-      <section id="center">
+      <NavBar />
+      <Routes>
+        <Route path="/"          element={auth ? <Navigate to="/dashboard" replace /> : <RegisterPage />} />
+        <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
+        <Route path="/deposit"   element={<ProtectedRoute><DepositPage /></ProtectedRoute>} />
+        <Route path="/transfer"  element={<ProtectedRoute><TransferPage /></ProtectedRoute>} />
+        <Route path="/history"   element={<ProtectedRoute><HistoryPage /></ProtectedRoute>} />
+        <Route path="*"          element={<Navigate to="/" replace />} />
+      </Routes>
+    </>
+  );
+};
+
+function App() {
+  return (
+    <AuthProvider>
+      <BrowserRouter>
+        <AppRoutes />
+      </BrowserRouter>
+    </AuthProvider>
+  );
+}
+
+export default App;
         <div className="hero">
           <img src={heroImg} className="base" width="170" height="179" alt="" />
           <img src={reactLogo} className="framework" alt="React logo" />

@@ -95,17 +95,7 @@
   }
 }
 
-#docs {
-  border-right: 1px solid var(--border);
-
-  @media (max-width: 1024px) {
-    border-right: none;
-    border-bottom: 1px solid var(--border);
-  }
-}
-
-#next-steps ul {
-  list-style: none;
+/* All styles have been moved to index.css */
   padding: 0;
   display: flex;
   gap: 8px;

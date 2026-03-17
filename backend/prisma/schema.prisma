@@ -1,0 +1,83 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+ // url      = env("DATABASE_URL")
+ 
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+
+}
+
+model User {
+  id           String   @id @default(uuid())
+  name         String
+  email        String   @unique
+  passwordHash String   @map("password_hash")
+  createdAt    DateTime @default(now()) @map("created_at")
+  wallet       Wallet?
+
+  @@map("users")
+}
+
+model Wallet {
+  id            String         @id @default(uuid())
+  userId        String         @unique @map("user_id")
+  createdAt     DateTime       @default(now()) @map("created_at")
+  user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  ledgerEntries LedgerEntry[]
+
+  @@map("wallets")
+}
+
+enum TransactionType {
+  deposit
+  transfer
+
+  @@map("transaction_type")
+}
+
+enum TransactionStatus {
+  pending
+  completed
+  failed
+
+  @@map("transaction_status")
+}
+
+model Transaction {
+  id             String            @id @default(uuid())
+  type           TransactionType
+  status         TransactionStatus @default(pending)
+  reference      String?
+  idempotencyKey String?           @unique @map("idempotency_key")
+  createdAt      DateTime          @default(now()) @map("created_at")
+  ledgerEntries  LedgerEntry[]
+
+  @@map("transactions")
+}
+
+enum EntryType {
+  credit
+  debit
+
+  @@map("entry_type")
+}
+
+model LedgerEntry {
+  id            String      @id @default(uuid())
+  walletId      String      @map("wallet_id")
+  transactionId String      @map("transaction_id")
+  type          EntryType
+  amount        Decimal     @db.Decimal(20, 2)
+  createdAt     DateTime    @default(now()) @map("created_at")
+  wallet        Wallet      @relation(fields: [walletId], references: [id])
+  transaction   Transaction @relation(fields: [transactionId], references: [id])
+
+  @@map("ledger_entries")
+}
