@@ -1,59 +1,92 @@
-// Entry point is src/index.ts — this file wa s created with a typo and is unused.
-
+/*
 import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
-import { config} from './config/env';
-
-//Route imports 
+import { config } from './config/env';
 import authRoutes from './routes/auth.routes';
+//import walletRoutes from './routes/wallet.routes';
+import walletRoutes from './routes/wallet.routes';
 
-const app = express(); 
+const app = express();
 
-// GLOBAL MIDDLEWARES 
-
-//Helment sets secure HTTP headers -protects against common attacks like XSS, clickjacking etc
+// ── Global Middleware ──────────────────────────
 app.use(helmet());
-
-//CORS -allows the frontend (on port 5173) to talk to the backend on port 3000 
 app.use(cors({
-    origin: process.env.NODE_ENV ==='production'
+  origin: process.env.NODE_ENV === 'production'
     ? process.env.FRONTEND_URL
-    :'http://localhost:5173',
-    credentials:true
-}))
-
-
-
-//Parsing incoming JSON request bodies
+    : 'http://localhost:5173',
+  credentials: true,
+}));
 app.use(express.json());
 
-//ROUTES 
-//health check 
-app.get('/health', (_req, res) =>{
-    res.json({ status :'ok', timestamp:new Date().toISOString()})
-})
+// ── Routes ────────────────────────────────────
+app.get('/health', (_req, res) => {
+  res.json({ status: 'ok', timestamp: new Date().toISOString() });
+});
 
-//Auth routes - register and login 
-app.use('/auth', authRoutes)
+// Public routes — no auth needed
+app.use('/auth', authRoutes);
 
-///GLOVAL ERROR HANDLER 
-app.use(( err:Error, _req :express.Request, res:express.Response,_next:express.NextFunction)=>{
-    console.error('Unhandled error: ',err);
-    res.status(500).json({
-        message:'Internal server error'
-    })
-})
+// Protected routes — authenticate middleware applied inside
+app.use('/wallet', walletRoutes);
 
-//STARTING SERVER 
-app.listen(config.port, ()=>{
-    console.log(`Server running on port ${config.port} in ${config.nodeEnv} mode`)
-})
+// ── Global Error Handler ───────────────────────
+app.use((err: Error, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
+  console.error('Unhandled error:', err);
+  res.status(500).json({ message: 'Internal server error' });
+});
+
+app.listen(config.port, () => {
+  console.log(`Server running on port ${config.port} in ${config.nodeEnv} mode`);
+});
 
 export default app;
 
-/*
-curl -X POST http://localhost:3000/auth/register \
-  -H "Content-Type: application/json" \
-  -d '{"name":"Alice","email":"alice@test.com","password":"password123"}'
+
 */
+import express from 'express';
+import cors from 'cors';
+import helmet from 'helmet';
+import cookieParser from 'cookie-parser';
+import { config} from './config/env';
+import authRoutes from './routes/auth.routes';
+import walletRoutes from './routes/wallet.routes';
+
+const app =express()
+
+//GLOBAL Middleware 
+app.use(helmet()); 
+
+//CORS must explicitly allow credentials (cookies ) and specify specific origin 
+app.use(cors({
+    origin:process.env.NODE_ENV ==='production' ? process.env.FRONTEND_URL : 'http://localhost:5173',
+    credentials:true, //allow cookies to be sent cross-origin 
+})); 
+
+//Parses incoming JSON bodies 
+app.use(express.json()); 
+
+//Parses cookies from incoming requests 
+app.use(cookieParser());
+
+//Routes 
+app.get('/health',(_req, res) =>{
+    res.json({ status: 'ok', timestamp: new Date().toISOString()})
+});
+
+app.use('/auth',authRoutes);
+app.use('/wallet',walletRoutes);
+
+//Global Error Handler 
+app.use((err:Error, _req :express.Request, res:express.Response, _next:express.NextFunction) =>{
+    console.error('Unhandled error: ', err);
+    res.status(500).json({ message: 'Internal server error'});
+})
+
+app.listen(config.port, ()=>{
+    console.log(`Server running on port ${config.port} mode `)
+
+}); 
+
+export default app;
+
