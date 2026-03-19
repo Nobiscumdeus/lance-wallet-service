@@ -1,4 +1,4 @@
-cat > README.md << 'EOF'
+
 # Lance Wallet Service
 
 A fintech wallet service built with Node.js, TypeScript, PostgreSQL, and React.
@@ -190,7 +190,7 @@ local PostgreSQL installation.
 
 ### 1. Clone the repository
 ```bash
-git clone https://github.com/YOUR_USERNAME/lance-wallet-service.git
+git clone https://github.com/Nobiscumdeus/lance-wallet-service.git
 cd lance-wallet-service
 ```
 
@@ -279,7 +279,7 @@ with a single command. No local PostgreSQL installation needed.
 
 ### 1. Clone the repository
 ```bash
-git clone https://github.com/YOUR_USERNAME/lance-wallet-service.git
+git clone https://github.com/Nobiscumdeus/lance-wallet-service.git
 cd lance-wallet-service
 ```
 
@@ -665,4 +665,3 @@ with automated alerts before issues affect users.
 **Reconciliation jobs** — scheduled background jobs that verify ledger consistency,
 flagging any wallet where the sum of ledger entries does not match expectations.
 This is a financial system safety net.
-EOF
