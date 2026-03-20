@@ -2,10 +2,16 @@ import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 //import prisma from '../prisma.config'
 import prisma from '../config/db';
-import { PrismaClient } from '../generated/prisma/client';
 
 import { config} from '../config/env'
 import { AuthPayload } from '../types'
+
+// HELPER — Generate JWT token
+// Kept private to this file — only auth service
+// should be creating tokens
+const generateToken = (payload:AuthPayload) : string =>{
+    return jwt.sign(payload, config.jwtSecret,{ expiresIn: config.jwtExpiresIn})
+}
 
 //Registration Logic 
 //We create a user and its wallet in one atomic 
@@ -43,5 +49,52 @@ export const registerUser = async (
   return newUser;
 });
 
+//Generate a JWT Token to log in user immediately after login 
+const token= generateToken({ userId : user.id, email:user.email})
 
+return{
+    token,
+    user:{
+        id:user.id,
+        name:user.name,
+        email:user.email,
+        createdAt:user.createdAt,
+    }
+}
+
+
+}
+
+//LOGIN 
+//Verifiies credentials and returns a JWT token 
+export const loginUser = async(email:string, password:string) =>{
+    //Finding user by email - including wallet id for convenience
+    const user = await prisma.user.findUnique({
+        where:{ email },
+        include:{ wallet:true},
+    });
+
+    //Using generic error message to avoid giving hints to attackers about which part of the credentials was wrong
+    if(!user){
+        throw new Error('Invalid email or password');
+    }
+
+    //Compare submitted password against stored hash 
+    const isValidPassword = await bcrypt.compare(password, user.passwordHash);
+
+    if(!isValidPassword){
+        throw new Error('Invalid email or password');
+    }
+
+    const token = generateToken({ userId: user.id, email:user.email})
+
+    return {
+        token,
+        user:{
+            id:user.id,
+            name:user.name,
+            email:user.email,
+            walletId:user.wallet?.id
+        }
+    }
 }

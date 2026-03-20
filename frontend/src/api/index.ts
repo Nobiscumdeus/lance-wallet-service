@@ -3,7 +3,7 @@ import axios from 'axios';
 const api = axios.create({
     baseURL:import.meta.env.VITE_API_URL || 'http://localhost:3000',
     headers:{
-        'Content=Type':'application/json',
+        'Content-Type':'application/json',
     },
     withCredentials:true, //Tells the browser to include cookies on every request , no manual token handling whatsoever 
 }); 

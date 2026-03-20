@@ -9,7 +9,7 @@ const COOKIE_OPTIONS={
     httpOnly:true, //JS cannot read this cookie - blocks XSS token theft 
     secure:process.env.NODE_ENV ==='production', // HTTPS only in production
     sameSite:'lax' as const ,//prevents CSRF on cross-site requests
-    maxAge:1*27*60*60*100, //1 day in milliseconds 
+    maxAge:1*24*60*60*100, //1 day in milliseconds 
     path:'/' //cookie sent on all routes 
 }
 
@@ -23,6 +23,7 @@ export const register= async (req:Request, res:Response)=>{
     try{
         const { name, email, password} = req.body;
         const result = await authService.registerUser(name,email,password);
+        res.cookie('token', result.token, COOKIE_OPTIONS); 
 
         //Return user info in body but not the token 
         //The client has no reason to hold the token directly 
