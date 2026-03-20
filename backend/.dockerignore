@@ -1,8 +1,8 @@
-#Docker is to igore these files 
+
+#  We are to never copy these into the Docker build context
 node_modules
 dist
 .env
-.env.example
 .env.local
 *.log
 npm-debug.log*
