@@ -18,20 +18,29 @@ export interface BalanceResponse{
     currency:string
 }
 
-export interface Transaction{
-    id:string;
-    type:'credit' |'debit';
-    amount:string;
-    createdAt:string;
-    transaction:{
-        id:string;
-        type:'deposit' | 'transfer';
-        status:'pending' | 'completed' | 'failed';
-        createdAt:string;
-
-    }
+export interface Transaction {
+  id: string;
+  walletId: string;
+  type: 'credit' | 'debit';
+  amount: string;
+  createdAt: string;
+  transaction: {
+    id: string;
+    type: 'deposit' | 'transfer';
+    status: 'pending' | 'completed' | 'failed';
+    createdAt: string;
+    ledgerEntries?: {
+      walletId: string;
+      wallet?: {
+        user?: {
+          id: string;
+          name: string;
+          email: string;
+        }
+      }
+    }[];
+  };
 }
-
 export interface TransactionHistoryResponse{
     transactions:Transaction[];
     pagination:{

@@ -52,7 +52,7 @@ export default function Register() {
               <input
                 type="text"
                 className="input"
-                placeholder="John Doe"
+                placeholder="Charles de Gaulle"
                 value={form.name}
                 onChange={(e) => setForm({ ...form, name: e.target.value })}
                 required
@@ -63,7 +63,7 @@ export default function Register() {
               <input
                 type="email"
                 className="input"
-                placeholder="you@example.com"
+                placeholder="charlie123@gmail.com"
                 value={form.email}
                 onChange={(e) => setForm({ ...form, email: e.target.value })}
                 required

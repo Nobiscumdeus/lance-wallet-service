@@ -21,6 +21,7 @@ and concurrency-safe operations.
 - [Security](#security)
 - [Assumptions](#assumptions)
 - [Scaling to 10 Million Transactions Per Day](#scaling-to-10-million-transactions-per-day)
+- [Screenshots](#screen-shots)
 
 ---
 
@@ -665,3 +666,15 @@ with automated alerts before issues affect users.
 **Reconciliation jobs** — scheduled background jobs that verify ledger consistency,
 flagging any wallet where the sum of ledger entries does not match expectations.
 This is a financial system safety net.
+
+
+## Screenshots
+
+### Login
+![Dashboard](./screenshots/login.png)
+
+### Registration
+![Register](./screenshots/register.png)
+
+### Dashboard
+![Dashboard](./screenshots/dashboard.png)

@@ -1,7 +1,6 @@
-//import { Decimal } from '../generated/prisma/client'
 import { Prisma } from '../generated/prisma/client';
 import prisma from '../config/db'
-import { Decimal } from '@prisma/client/runtime/index-browser';
+
 
 type TxClient = Prisma.TransactionClient
 
@@ -95,7 +94,7 @@ export const deposit = async(
             walletId:wallet.id,
             transactionId:transaction.id,
             type:'credit',
-            amount:new Decimal(amount)
+            amount:new Prisma.Decimal(amount)
         }
     })
 
@@ -174,7 +173,7 @@ const result = await prisma.$transaction(async (tx) =>{
     const senderBalance = await calculateBalance(fromWallet.id,tx );
   
         //Check sender has enough funds 
-        if(senderBalance.lessThan(new Decimal(amount))){
+        if(senderBalance.lessThan(new Prisma.Decimal(amount))){
             throw new Error('Insufficient funds');
         }
 
@@ -193,7 +192,7 @@ const result = await prisma.$transaction(async (tx) =>{
                 walletId:fromWallet.id,
                 transactionId:transaction.id,
                 type:'debit',
-                amount: new Decimal(amount)
+                amount: new Prisma.Decimal(amount)
             }
         }); 
 
@@ -203,7 +202,7 @@ const result = await prisma.$transaction(async (tx) =>{
                 walletId:toWallet.id,
                 transactionId:transaction.id,
                 type:'credit',
-                amount: new Decimal(amount),
+                amount: new Prisma.Decimal(amount),
             }
         });
 
@@ -260,23 +259,39 @@ export const getTransactionHistory = async(
     
     //Get ledger entries with transaction details 
     //ordered by most recent first 
-    const entries = await prisma.ledgerEntry.findMany({
-        where:{ walletId: wallet.id},
-        include:{
-            transaction:{
-                select:{
-                    id:true,
-                    type:true,
-                    status:true,
-                    createdAt:true
+  const entries = await prisma.ledgerEntry.findMany({
+    where: { walletId: wallet.id },
+    include: {
+        transaction: {
+            select: {
+                id: true,
+                type: true,
+                status: true,
+                createdAt: true,
+                // Include ALL ledger entries on this transaction
+                // so we can find the other party involved
+                ledgerEntries: {
+                    include: {
+                        wallet: {
+                            include: {
+                                user: {
+                                    select: {
+                                        id: true,
+                                        name: true,
+                                        email: true,
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             }
-        },
-
-        orderBy:{ createdAt:'desc'},
-        skip:offset,
-        take:limit
-    });
+        }
+    },
+    orderBy: { createdAt: 'desc' },
+    skip: offset,
+    take: limit,
+});
 
     //Total count for pagination metadata 
     const total = await prisma.ledgerEntry.count({
